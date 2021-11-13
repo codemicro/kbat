@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/alecthomas/kong"
 	"github.com/codemicro/kbat/kbat/internal/config"
-	"github.com/codemicro/kbat/kbat/internal/new"
+	"github.com/codemicro/kbat/kbat/internal/commands/new"
 )
 
 var CLI struct {
