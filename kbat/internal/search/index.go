@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"os"
 	"path/filepath"
 )
@@ -18,7 +19,7 @@ type Index struct {
 
 func NewIndex(sourceDirectory string) *Index {
 	return &Index{
-		sourceDirectory: sourceDirectory,
+		sourceDirectory: filepath.Join(sourceDirectory, "_index"),
 		Documents:       make(map[string]*Document),
 		Index:           make(map[string][]string),
 	}
@@ -78,4 +79,12 @@ func (i *Index) ToDisk() error {
 	}
 
 	return ioutil.WriteFile(filepath.Join(i.sourceDirectory, "index.json"), jsonData, 0644)
+}
+
+func (i *Index) documentFrequency(token string) int {
+	return len(i.Index[token])
+}
+
+func (i *Index) inverseDocumentFrequency(token string) float64 {
+	return math.Log10(float64(len(i.Documents)) / float64(i.documentFrequency(token)))
 }

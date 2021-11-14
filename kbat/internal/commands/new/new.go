@@ -56,6 +56,8 @@ func (*Command) Run(c *config.Config) error {
 		return errors.New("user cancel")
 	}
 
+	outputFilename = filepath.Join(c.RepositoryLocation, outputFilename)
+
 	dir := filepath.Dir(outputFilename)
 	if err := os.MkdirAll(dir, 0777); err != nil {
 		return err

@@ -14,7 +14,7 @@ type Command struct{}
 
 func (*Command) Run(c *config.Config) error {
 
-	index := search.NewIndex(filepath.Join(c.RepositoryLocation, "_index"))
+	index := search.NewIndex(c.RepositoryLocation)
 
 	dataFileLocations, err := recursiveFileFind(c.RepositoryLocation)
 	if err != nil {

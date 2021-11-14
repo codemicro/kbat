@@ -3,7 +3,6 @@ package datafiles
 import (
 	"bytes"
 	"errors"
-	"fmt"
 
 	"gopkg.in/yaml.v2"
 )
@@ -23,10 +22,6 @@ func NewDataFileFromFileContent(fileContent []byte) (*DataFile, error) {
 	}
 
 	// in the case of a valid file, `parts` will look like: ["", <header content>, <body content>...]
-
-	for _, x := range parts {
-		fmt.Printf("%#v\n", string(x))
-	}
 
 	yamlSection := parts[1]
 	bodySection := parts[2:]
