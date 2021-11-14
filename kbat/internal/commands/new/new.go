@@ -18,12 +18,12 @@ type Command struct{}
 func (*Command) Run(c *config.Config) error {
 	// TODO: Where do we get the directory from?
 
-	tpls, err := templates.ListTemplatesInDir(filepath.Join(c.RepositoryLocation, "_templates"))
+	tpls, err := templates.ListTemplateFilesInDir(filepath.Join(c.RepositoryLocation, "_templates"))
 	if err != nil {
 		return err
 	}
 
-	var chosenTemplate *templates.Template // will be nil if no template is selcted
+	var chosenTemplate *templates.TemplateFile // will be nil if no template is selcted
 	{
 		var x []string
 		for _, tpl := range tpls {
