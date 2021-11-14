@@ -6,10 +6,11 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/codemicro/kbat/kbat/internal/config"
+	"github.com/codemicro/kbat/kbat/internal/datafiles"
 	"github.com/codemicro/kbat/kbat/internal/files"
-	"github.com/codemicro/kbat/kbat/internal/templates"
 	"github.com/codemicro/kbat/kbat/internal/ui"
 )
 
@@ -18,12 +19,12 @@ type Command struct{}
 func (*Command) Run(c *config.Config) error {
 	// TODO: Where do we get the directory from?
 
-	tpls, err := templates.ListTemplateFilesInDir(filepath.Join(c.RepositoryLocation, "_templates"))
+	tpls, err := datafiles.ListDataFilesInDir(filepath.Join(c.RepositoryLocation, "_templates"))
 	if err != nil {
 		return err
 	}
 
-	var chosenTemplate *templates.TemplateFile // will be nil if no template is selcted
+	var chosenTemplate *datafiles.DataFileLocation // will be nil if no template is selcted
 	{
 		var x []string
 		for _, tpl := range tpls {
@@ -38,9 +39,13 @@ func (*Command) Run(c *config.Config) error {
 		}
 	}
 
-	outputFilename, err := files.SelectNewFilePath(".")
+	outputFilename, err := files.SelectNewFilePath(c.RepositoryLocation)
 	if err != nil {
 		return err
+	}
+
+	if !strings.HasSuffix(strings.ToLower(outputFilename), ".md") {
+		outputFilename += ".md"
 	}
 
 	fmt.Printf("\n  Chosen template: %s\n  Filename: %s\n\n", chosenTemplate, outputFilename)
@@ -52,7 +57,7 @@ func (*Command) Run(c *config.Config) error {
 	}
 
 	dir := filepath.Dir(outputFilename)
-	if err := os.MkdirAll(dir, os.ModeDir); err != nil {
+	if err := os.MkdirAll(dir, 0777); err != nil {
 		return err
 	}
 

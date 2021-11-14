@@ -2,12 +2,14 @@ package main
 
 import (
 	"github.com/alecthomas/kong"
-	"github.com/codemicro/kbat/kbat/internal/config"
+	"github.com/codemicro/kbat/kbat/internal/commands/index"
 	"github.com/codemicro/kbat/kbat/internal/commands/new"
+	"github.com/codemicro/kbat/kbat/internal/config"
 )
 
 var CLI struct {
-	New *new.Command `cmd:"" help:"Remove files."`
+	New   *new.Command   `cmd:"" help:"Remove files."`
+	Index *index.Command `cmd:"" help:"Index datafiles."`
 }
 
 func main() {

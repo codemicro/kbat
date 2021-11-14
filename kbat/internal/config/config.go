@@ -21,9 +21,9 @@ func getConfigDir() (string, error) {
 		return "", errors.New("user has no home directory")
 	}
 
-	configDir := filepath.Join(currentUser.HomeDir, "config", "kbat")
+	configDir := filepath.Join(currentUser.HomeDir, ".config", "kbat")
 
-	if err := os.MkdirAll(configDir, os.ModeDir); err != nil && !errors.Is(err, os.ErrExist) {
+	if err := os.MkdirAll(configDir, 0777); err != nil && !errors.Is(err, os.ErrExist) {
 		return "", err
 	}
 
@@ -65,7 +65,7 @@ func LoadConfig() (*Config, error) {
 		return nil, err
 	}
 
-	var conf *Config
+	conf := new(Config)
 	if err := json.Unmarshal(fcont, conf); err != nil {
 		return nil, err
 	}
