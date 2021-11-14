@@ -1,6 +1,7 @@
 package files
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -33,4 +34,23 @@ func Copy(src, dst string) (int64, error) {
 	nBytes, err := io.Copy(destination, source)
 
 	return nBytes, err
+}
+
+func ListCategoriesInDir(dir string) ([]string, error) {
+
+	de, err := os.ReadDir(dir)
+	if err != nil {
+		if !errors.Is(err, os.ErrNotExist) {
+			return nil, err
+		}
+	}
+
+	var x []string
+	for _, dirEntry := range de {
+		if first := dirEntry.Name()[0]; !(first == '_' || first == '.') && dirEntry.IsDir() {
+			x = append(x, dirEntry.Name())
+		}
+	}
+
+	return x, nil
 }

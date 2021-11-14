@@ -2,31 +2,11 @@ package files
 
 import (
 	"errors"
-	"os"
 	"path/filepath"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/codemicro/kbat/kbat/internal/ui"
 )
-
-func listCategoriesInDir(dir string) ([]string, error) {
-
-	de, err := os.ReadDir(dir)
-	if err != nil {
-		if !errors.Is(err, os.ErrNotExist) {
-			return nil, err
-		}
-	}
-
-	var x []string
-	for _, dirEntry := range de {
-		if first := dirEntry.Name()[0]; !(first == '_' || first == '.') && dirEntry.IsDir() {
-			x = append(x, dirEntry.Name())
-		}
-	}
-
-	return x, nil
-}
 
 func SelectNewFilePath(dir string) (string, error) {
 
@@ -37,7 +17,7 @@ func SelectNewFilePath(dir string) (string, error) {
 
 infLoop:
 	for {
-		categories, err := listCategoriesInDir(filepath.Join(append([]string{dir}, pathComponents...)...))
+		categories, err := ListCategoriesInDir(filepath.Join(append([]string{dir}, pathComponents...)...))
 		if err != nil {
 			return "", err
 		}
