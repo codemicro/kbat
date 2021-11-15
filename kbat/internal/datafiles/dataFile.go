@@ -9,18 +9,20 @@ import (
 
 type HeaderData map[interface{}]interface{}
 
-func (h HeaderData) GetString(key interface{}) string {
+func (h HeaderData) GetString(key interface{}) (string, bool) {
 	if v, ok := h[key]; ok {
 		if s, ok := v.(string); ok {
-			return s
+			return s, true
 		}
+		return "", true
 	}
-	return ""
+	return "", false
 }
 
-func (h HeaderData) GetStringSlice(key interface{}) []string {
+func (h HeaderData) GetStringSlice(key interface{}) ([]string, bool) {
 	var o []string
-	if v, ok := h[key]; ok {
+	v, keyExisted := h[key]
+	if keyExisted {
 		if s, ok := v.([]interface{}); ok {
 			for _, y := range s {
 				if x, ok := y.(string); ok {
@@ -29,7 +31,7 @@ func (h HeaderData) GetStringSlice(key interface{}) []string {
 			}
 		}
 	}
-	return o
+	return o, keyExisted
 }
 
 type DataFile struct {

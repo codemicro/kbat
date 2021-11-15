@@ -31,15 +31,15 @@ func (*Command) Run(c *config.Config) error {
 
 		// join title, description and any tags into one
 
-		if title := df.Header.GetString("title"); title != "" {
+		if title, _ := df.Header.GetString("title"); title != "" {
 			textParts = append(textParts, title)
 		}
 
-		if desc := df.Header.GetString("description"); desc != "" {
+		if desc, _ := df.Header.GetString("description"); desc != "" {
 			textParts = append(textParts, desc)
 		}
 
-		if tags := df.Header.GetStringSlice("tags"); len(tags) != 0 {
+		if tags, _ := df.Header.GetStringSlice("tags"); len(tags) != 0 {
 			textParts = append(textParts, tags...)
 		}
 

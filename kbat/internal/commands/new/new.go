@@ -3,10 +3,12 @@ package new
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/codemicro/kbat/kbat/internal/config"
 	"github.com/codemicro/kbat/kbat/internal/datafiles"
@@ -64,7 +66,23 @@ func (*Command) Run(c *config.Config) error {
 	}
 
 	if chosenTemplate != nil {
-		if _, err := files.Copy(chosenTemplate.Path, outputFilename); err != nil {
+
+		df, err := chosenTemplate.GetDataFile()
+		if err != nil {
+			return err
+		}
+
+		_, exists := df.Header.GetString("createdDate")
+		if exists {
+			df.Header["createdDate"] = time.Now().Format("2006-01-02")
+		}
+
+		dat, err := df.Generate()
+		if err != nil {
+			return err
+		}
+
+		if err := ioutil.WriteFile(outputFilename, dat, 0644); err != nil {
 			return err
 		}
 	} else {
@@ -77,6 +95,5 @@ func (*Command) Run(c *config.Config) error {
 
 	fmt.Println("File created")
 
-	// TODO: Don't hard-code this program into here?
 	return exec.Command(c.Editor, outputFilename).Start()
 }
