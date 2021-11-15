@@ -30,31 +30,17 @@ func (*Command) Run(c *config.Config) error {
 		var textParts []string
 
 		// join title, description and any tags into one
-		// TODO: These seem bad
-		if v, ok := df.Header["title"]; ok {
-			if s, ok := v.(string); ok {
-				textParts = append(textParts, s)
-			}
+
+		if title := df.Header.GetString("title"); title != "" {
+			textParts = append(textParts, title)
 		}
 
-		if v, ok := df.Header["description"]; ok {
-			if s, ok := v.(string); ok {
-				textParts = append(textParts, s)
-			}
+		if desc := df.Header.GetString("description"); desc != "" {
+			textParts = append(textParts, desc)
 		}
 
-		if v, ok := df.Header["tags"]; ok {
-			if s, ok := v.([]interface{}); ok {
-				for _, tag := range s {
-					if x, ok := tag.(string); ok {
-						textParts = append(textParts, x)
-					}
-				}
-			}
-		}
-
-		if len(textParts) == 0 {
-			continue
+		if tags := df.Header.GetStringSlice("tags"); len(tags) != 0 {
+			textParts = append(textParts, tags...)
 		}
 
 		index.AddDocument(

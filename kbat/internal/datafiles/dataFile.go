@@ -7,8 +7,33 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+type HeaderData map[interface{}]interface{}
+
+func (h HeaderData) GetString(key interface{}) string {
+	if v, ok := h[key]; ok {
+		if s, ok := v.(string); ok {
+			return s
+		}
+	}
+	return ""
+}
+
+func (h HeaderData) GetStringSlice(key interface{}) []string {
+	var o []string
+	if v, ok := h[key]; ok {
+		if s, ok := v.([]interface{}); ok {
+			for _, y := range s {
+				if x, ok := y.(string); ok {
+					o = append(o, x)
+				}
+			}
+		}
+	}
+	return o
+}
+
 type DataFile struct {
-	Header map[interface{}]interface{}
+	Header HeaderData
 	Body   string
 }
 
@@ -26,7 +51,7 @@ func NewDataFileFromFileContent(fileContent []byte) (*DataFile, error) {
 	yamlSection := parts[1]
 	bodySection := parts[2:]
 
-	yamlData := make(map[interface{}]interface{})
+	yamlData := make(HeaderData)
 	err := yaml.Unmarshal(yamlSection, &yamlData)
 	if err != nil {
 		return nil, err

@@ -36,30 +36,15 @@ func (cmd *Command) Run(c *config.Config) error {
 
 		fmt.Println(result.Document.Path)
 
-		if v, ok := df.Header["title"]; ok {
-			if s, ok := v.(string); ok {
-				fmt.Println(" - Title:", s)
-			}
+		if title := df.Header.GetString("title"); title != "" {
+			fmt.Println(" - Title:", title)
 		}
 
-		if v, ok := df.Header["description"]; ok {
-			if s, ok := v.(string); ok {
-				fmt.Println(" - Description:", s)
-			}
+		if desc := df.Header.GetString("description"); desc != "" {
+			fmt.Println(" - Title:", desc)
 		}
 
-		var tags []string
-		if v, ok := df.Header["tags"]; ok {
-			if s, ok := v.([]interface{}); ok {
-				for _, tag := range s {
-					if x, ok := tag.(string); ok {
-						tags = append(tags, x)
-					}
-				}
-			}
-		}
-
-		if len(tags) != 0 {
+		if tags := df.Header.GetStringSlice("tags"); len(tags) != 0 {
 			fmt.Println(" - Tags:", strings.Join(tags, ", "))
 		}
 

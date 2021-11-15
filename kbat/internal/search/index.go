@@ -3,11 +3,11 @@ package search
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"math"
 	"os"
 	"path/filepath"
+	"strconv"
 )
 
 type Index struct {
@@ -47,7 +47,7 @@ func NewDocument(path, text string) *Document {
 
 func (i *Index) nextIdentifier() string {
 	i.currentIdentifier += 1
-	return fmt.Sprintf("%07d", i.currentIdentifier)
+	return strconv.Itoa(i.currentIdentifier)
 }
 
 // AddDocument adds a *Document to the index. The document will have the ID
@@ -69,7 +69,7 @@ func (i *Index) FromDisk() error {
 }
 
 func (i *Index) ToDisk() error {
-	jsonData, err := json.MarshalIndent(i, "", "\t")
+	jsonData, err := json.Marshal(i)
 	if err != nil {
 		return err
 	}
